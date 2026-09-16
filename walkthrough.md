@@ -110,3 +110,27 @@ A critical provenance bug involving fake page-number generation for TXT sources 
 `TASK 06 READY FOR TASK 07`
 No LLM, Vector Database, Embeddings, or Recommendations were implemented. This correction solely focused on pipeline extraction accuracy.
 
+# Phase 2: Task 07 - Hugging Face Embedding System Report
+The core Embedding Service for **EcoMind AI** has been successfully constructed, utilizing a pure Hugging Face architecture to translate scientific text into machine-readable mathematical vectors.
+
+## 1. Implementation Details
+- **Embedding Service**: Authored `backend/app/rag/embeddings/embedding_service.py` to wrap the `sentence-transformers/all-MiniLM-L6-v2` model.
+- **Generator Pipeline**: Implemented `generator.py` to stream JSONL knowledge chunks, embed their text content, and stream out JSONL embeddings while flawlessly preserving the provenance metadata.
+- **Model Acquisition**: The model auto-downloads via the `sentence-transformers` PyPI package. No custom weights, API keys (OpenAI/Gemini), or fine-tuning mechanisms were introduced.
+- **Git Security**: Explicitly updated `.gitignore` to block `.cache/huggingface/` to guarantee bulky model binaries are not pushed to Git.
+
+## 2. Validation & Testing
+All constraints were verified through rigorous `pytest` assertions (`tests/unit/test_embeddings.py`):
+1. **Dimension**: Asserts generated arrays are exactly 384-dimensional.
+2. **Determinism**: Asserts identical input mathematically guarantees identical vectors.
+3. **Provenance Mapping**: Asserts that `chunk_id`, `source_id`, `page_number`, `topics`, and `relationships` are flawlessly copied from the chunk JSON into the embedding JSON without omission.
+
+## 3. Execution Metrics
+- Model loaded: `sentence-transformers/all-MiniLM-L6-v2`
+- Dimensions: `384`
+- Processed chunks: `1` (The dummy FAO text from Task 06)
+- Failed chunks: `0`
+
+## 4. Git Status
+All modifications were cleanly committed. No scientific documents were modified, and no vector databases were implemented yet. The architecture successfully transitions from `Chunks` to `Embedding Vectors`.
+

@@ -67,3 +67,8 @@ htmlcov/
 
 # Pytest
 .pytest_cache/
+
+# Hugging Face Cache
+.cache/
+huggingface/
+
