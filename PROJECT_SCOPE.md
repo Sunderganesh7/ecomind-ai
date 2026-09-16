@@ -70,7 +70,96 @@ Implement the architecture so these stages are distinguishable. Do not collapse 
 
 ---
 
-### 4. ENVIRONMENTAL DATA
+### 4. CONVERSATIONAL CLARIFICATION
+
+The system must identify incomplete environmental input and ask relevant clarifying questions before producing a major environmental assessment when necessary.
+
+**Requirements:**
+- The system must detect missing or insufficient environmental information.
+- It should ask targeted clarification questions for the missing variables.
+- Questions should be relevant to the user's environmental context.
+- It must not fabricate missing environmental values.
+- If sufficient information is available, it should proceed without unnecessary questions.
+- The clarification process must support the environmental intelligence pipeline rather than turning the system into a generic chatbot.
+
+**Example:**
+*User:* "Biodiversity is declining on my land."
+*System:* "To assess the likely causes, please provide: soil organic carbon, rainfall pattern, and land-use type."
+The system should then use the provided information in subsequent reasoning.
+
+---
+
+### 5. MULTI-TURN MEMORY / CONTEXT
+
+The system must support multi-turn environmental conversations and retain relevant context.
+
+**Requirements:**
+- The system should remember relevant environmental information provided earlier in the conversation.
+- Later questions should be interpreted using previously provided environmental context when applicable.
+- The system should avoid repeatedly asking for information that is already available.
+- Memory must be scoped to relevant environmental/project context.
+- New information provided by the user should update or refine the existing context.
+- Memory must never be used to invent environmental measurements or scientific facts.
+- The reasoning engine must receive the relevant structured context rather than relying on an uncontrolled conversational history alone.
+
+**Example:**
+*Turn 1:* User provides rainfall, soil carbon, land-use and location.
+*Turn 2:* User asks: "What should I change?"
+The system should use the environmental information from Turn 1 when generating the assessment.
+
+---
+
+### 6. TEXT INPUT
+
+**TEXT INPUT IS MANDATORY.**
+
+The system must accept natural-language environmental descriptions from users.
+
+**Examples:**
+- "My farmland has low soil organic carbon and rainfall has decreased."
+- "Vegetation has declined in this region."
+- "Biodiversity is decreasing around this forest."
+- "What could be causing habitat degradation here?"
+
+**Requirements:**
+- The system must extract relevant environmental entities, variables, observations, locations, time periods, and contextual information from the text where possible.
+- Text extraction must NOT create measurements that were not provided.
+- Extracted information should be converted into structured data that can be passed to the environmental analysis pipeline.
+
+---
+
+### 7. STRUCTURED INPUT / JSON
+
+The system must support structured environmental input in JSON or an equivalent structured format.
+
+**Example:**
+```json
+{
+  "location": "Example Region",
+  "soil": {
+    "organic_carbon": 0.3,
+    "ph": 6.2,
+    "moisture": 18
+  },
+  "climate": {
+    "rainfall": 420,
+    "temperature": 31
+  },
+  "land_use": "monoculture"
+}
+```
+
+**Requirements:**
+- Structured input must be validated before analysis.
+- Missing fields must be identified explicitly.
+- Invalid values must not silently become environmental measurements.
+- Structured data should feed directly into the data validation and environmental analysis pipeline.
+- The system must preserve units and metadata where available.
+- Structured input and text input should ultimately be convertible into a common internal environmental representation.
+
+---
+
+### 8. ENVIRONMENTAL DATA
 
 The system should be capable of working with multiple environmental variables. Examples include:
 - Rainfall, Temperature
@@ -91,7 +180,7 @@ The exact variables depend on available datasets.
 
 ---
 
-### 5. MULTI-VARIABLE REASONING — CRITICAL
+### 9. MULTI-VARIABLE REASONING — CRITICAL
 
 This is one of the most important requirements.
 
@@ -107,7 +196,7 @@ The number of variables should be data-driven. If only two meaningful variables 
 
 ---
 
-### 6. RELATIONSHIP ANALYSIS
+### 10. RELATIONSHIP ANALYSIS
 
 The system must analyze relationships between environmental variables rather than treating each metric independently.
 
@@ -126,7 +215,7 @@ The system should identify meaningful relationships using thresholds where scien
 
 ---
 
-### 7. SCIENTIFIC KNOWLEDGE RETRIEVAL
+### 11. SCIENTIFIC KNOWLEDGE RETRIEVAL
 
 Scientific/environmental knowledge must be retrieved from a grounded knowledge source whenever possible.
 
@@ -136,7 +225,7 @@ The retrieval layer should provide relevant evidence for the environmental reaso
 
 ---
 
-### 8. EVIDENCE
+### 12. EVIDENCE
 
 Major environmental conclusions should be traceable to evidence. For each important assessment, aim to provide:
 1. environmental observation
@@ -154,7 +243,7 @@ Where possible, expose evidence to the user through: source name, title, publica
 
 ---
 
-### 9. REASONING LAYER
+### 13. REASONING LAYER
 
 The reasoning engine must combine:
 1. Actual environmental data
@@ -171,7 +260,7 @@ Instead, provide structured inputs (Observations, Derived Indicators, Detected R
 
 ---
 
-### 10. INTERVENTION GENERATION
+### 14. INTERVENTION GENERATION
 
 Recommendations must be:
 - specific, location/context aware
@@ -193,7 +282,7 @@ Avoid generic recommendations such as: ❌ "Plant more trees." ❌ "Protect biod
 
 ---
 
-### 11. NO STATIC RECOMMENDATION ENGINE
+### 15. NO STATIC RECOMMENDATION ENGINE
 
 Do NOT hardcode: `IF rainfall < X THEN recommend Y.`
 
@@ -203,21 +292,21 @@ The architecture must allow recommendations to change when environmental data ch
 
 ---
 
-### 12. TEMPORAL REASONING
+### 16. TEMPORAL REASONING
 
 Where historical data exists, analyze change over time (e.g., NDVI trend, rainfall trend, biodiversity trend).
 Do not only analyze a single snapshot when temporal data is available.
 
 ---
 
-### 13. SPATIAL REASONING
+### 17. SPATIAL REASONING
 
 Where spatial information exists, use it. The system should be able to reason about geographic zones, habitat patches, land-use regions, environmental hotspots, degraded areas, etc.
 Recommendations should ideally identify WHERE an intervention is most relevant.
 
 ---
 
-### 14. OUTPUT STRUCTURE
+### 18. OUTPUT STRUCTURE
 
 A major environmental assessment should follow this structure:
 1. **ENVIRONMENTAL STATUS:** Summarize the observed environmental conditions.
@@ -232,7 +321,7 @@ A major environmental assessment should follow this structure:
 
 ---
 
-### 15. AI ENVIRONMENTAL SCIENTIST BEHAVIOR
+### 19. AI ENVIRONMENTAL SCIENTIST BEHAVIOR
 
 The system should behave like:
 `DATA SCIENTIST + ECOLOGIST + ENVIRONMENTAL ANALYST + RESEARCH ASSISTANT + DECISION SUPPORT SYSTEM`
@@ -242,16 +331,18 @@ NOT: *"Use an LLM to answer environmental questions."*
 
 ---
 
-### 16. ARCHITECTURE PRINCIPLE
+### 20. ARCHITECTURE PRINCIPLE
 
 Maintain clear separation between layers:
-`DATA INGESTION` → `DATA VALIDATION` → `DATA PROCESSING` → `FEATURE / METRIC ENGINE` → `RELATIONSHIP ANALYSIS` → `RISK DETECTION` → `SCIENTIFIC RETRIEVAL` → `EVIDENCE PROCESSING` → `REASONING ENGINE` → `INTERVENTION ENGINE` → `EXPLANATION / VISUALIZATION`
+`TEXT / STRUCTURED INPUT` → `INPUT VALIDATION` → `CONTEXT / MEMORY` → `DATA PROCESSING` → `FEATURE / METRIC ENGINE` → `RELATIONSHIP ANALYSIS` → `RISK DETECTION` → `SCIENTIFIC RETRIEVAL` → `EVIDENCE PROCESSING` → `REASONING ENGINE` → `INTERVENTION ENGINE` → `EXPLANATION / VISUALIZATION`
 
 Each layer should have a clear responsibility. Do not put all intelligence into frontend code or a single backend LLM call.
 
+Conversational clarification should occur whenever required information is missing. Multi-turn memory should provide relevant previously supplied context to the pipeline.
+
 ---
 
-### 17. ANTI-HALLUCINATION REQUIREMENT
+### 21. ANTI-HALLUCINATION REQUIREMENT
 
 The system must NEVER:
 - fabricate environmental values, species, scientific papers, citations.
@@ -262,7 +353,7 @@ When information is uncertain: **STATE THE UNCERTAINTY.**
 
 ---
 
-### 18. ACCEPTANCE TEST
+### 22. ACCEPTANCE TEST
 
 Before considering any major feature complete, verify:
 - [ ] Does it use real/available environmental data?
@@ -276,10 +367,19 @@ Before considering any major feature complete, verify:
 - [ ] Does the system explain WHY the recommendation was generated?
 - [ ] Does it identify uncertainty or missing data?
 - [ ] Is the feature more than a chatbot response?
+- [ ] Does the system support natural-language text input?
+- [ ] Does the system support structured input such as JSON?
+- [ ] Does the system validate structured environmental input?
+- [ ] Does the system identify missing environmental information?
+- [ ] Does the system ask relevant clarification questions when necessary?
+- [ ] Does the system retain relevant environmental context across multiple turns?
+- [ ] Does the system avoid asking again for information already available?
+- [ ] Can text and structured input be converted into a common internal environmental representation?
+- [ ] Does memory/context avoid fabricating environmental information?
 
 ---
 
-### 19. GOLDEN EXAMPLE
+### 23. GOLDEN EXAMPLE
 
 **INPUT:** Rainfall, Soil Organic Carbon, Land Use, Species Richness, NDVI, Temperature
 **ANALYSIS:** Detect reduced rainfall, elevated temp, low SOC, intensive land use, declining NDVI, reduced richness.
@@ -296,7 +396,7 @@ Before considering any major feature complete, verify:
 
 ---
 
-### 20. FINAL DEVELOPMENT RULE
+### 24. FINAL DEVELOPMENT RULE
 
 **FROM THIS POINT FORWARD:**
 Do not implement features merely because they look impressive. Prioritize features that increase:
