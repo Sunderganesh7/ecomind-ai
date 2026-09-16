@@ -82,8 +82,69 @@ The **Environmental Profile API** establishes a structured-input layer for recei
 - Invalid requests immediately return `422 Unprocessable Entity` with a structured JSON detailing the exact field errors.
 - Non-existent profile lookups/updates return `404 Not Found`.
 
-## How to Run Tests
-Tests are located in the `tests/` directory at the project root.
+## Knowledge Search API
+
+**Endpoint**: `POST /api/v1/knowledge/search`
+Retrieves relevant scientific chunks from the ChromaDB knowledge base based on a semantic query.
+
+### Request Body
+```json
+{
+  "query": "relationship between soil carbon and biodiversity",
+  "top_k": 5
+}
+```
+
+### Success Response (200 OK)
+```json
+{
+  "results": [
+    {
+      "text": "State of Knowledge of Soil Biodiversity...",
+      "relevance": 0.8065,
+      "source_id": "fao_soil_biodiversity_2020",
+      "chunk_id": "fao_soil_biodiversity_2020_null_c000_339058b3e4b9",
+      "url": "https://www.fao.org/documents/card/en/c/CB1928EN/",
+      "topic": "soil_biodiversity",
+      "topics": [
+        "soil_health",
+        "pollution"
+      ],
+      "relationships": [
+        "Soil Health ↔ Biodiversity"
+      ]
+    }
+  ]
+}
+```
+
+## ChromaDB Knowledge Architecture
+
+The RAG subsystem implements persistent vector storage for scientific evidence retrieval.
+
+- **Storage Location**: `knowledge_base/chroma`
+- **Collection Name**: `ecomind_scientific_knowledge`
+- **Embedding Model**: `sentence-transformers/all-MiniLM-L6-v2` (Auto-downloaded, dimension 384)
+
+### Indexing
+Run the indexing pipeline to populate ChromaDB from the generated embeddings:
+```bash
+$env:PYTHONPATH="backend"
+python -m app.rag.index
+```
+
+### Search Process & Relevance Interpretation
+When a query hits the `/search` endpoint:
+1. The `KnowledgeSearchService` embeds the query dynamically.
+2. ChromaDB evaluates vector nearest-neighbors using cosine similarity.
+3. Distances are mathematically transformed into a user-facing `relevance` metric (`1.0 - distance`). A score closer to `1.0` indicates high semantic overlap.
+4. Rich arrays (`topics`, `relationships`) stored as flattened strings inside ChromaDB are seamlessly reconstructed into structured arrays before the API response is served.
+
+**Provenance Guarantees**: The endpoint exclusively returns real passages extracted during the ingestion pipeline. No LLM generation or hallucination is performed during the search retrieval layer.
+
+## Testing
+
+Run the full suite using pytest from the repository root: the project root.
 ```bash
 # Ensure PYTHONPATH is set so pytest can locate the 'app' module
 $env:PYTHONPATH="backend" # Windows PowerShell

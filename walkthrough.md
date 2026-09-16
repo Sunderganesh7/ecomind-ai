@@ -134,3 +134,23 @@ All constraints were verified through rigorous `pytest` assertions (`tests/unit/
 ## 4. Git Status
 All modifications were cleanly committed. No scientific documents were modified, and no vector databases were implemented yet. The architecture successfully transitions from `Chunks` to `Embedding Vectors`.
 
+# Phase 3: Task 08 - ChromaDB Knowledge Store Report
+The **ChromaDB Knowledge Store** and semantic search API have been successfully integrated into EcoMind AI. The vector layer acts as the actual source of scientific evidence for future LLM reasoning.
+
+## 1. Implementation Details
+- **Knowledge Store**: Implemented `backend/app/rag/store/chroma_store.py` wrapping ChromaDB with persistent local storage at `knowledge_base/chroma`.
+- **Metadata Handling**: Automatically flattens complex array fields (`variables`, `topics`, `relationships`) into pipe-delimited strings (`|`) for safe insertion into ChromaDB, and seamlessly reconstructs them into structured arrays on retrieval.
+- **Search API**: Created a semantic search endpoint (`POST /api/v1/knowledge/search`) powered by the `KnowledgeSearchService`. It embeds user queries on-the-fly and returns chunks ordered by a calculated semantic `relevance` metric (1.0 - cosine distance).
+- **Indexing Pipeline**: Added an idempotent ingestion CLI script (`backend/app/rag/index.py`) that strictly leverages deterministic `chunk_id`s to prevent duplication on multiple runs.
+
+## 2. Validation & Testing
+- 11 dedicated automated tests check dimension alignment, metadata stringification/reconstruction, empty query validation, API constraints (`top_k`), and idempotent database behavior.
+- Demonstrated end-to-end functionality using an API integration test query: `"relationship between soil carbon and biodiversity"` accurately retrieving the FAO chunk from ChromaDB.
+
+## 3. Metrics
+- **Embedding model**: `sentence-transformers/all-MiniLM-L6-v2`
+- **Chunks loaded/indexed**: `1`
+- **ChromaDB Collection**: `ecomind_scientific_knowledge`
+- **Persistence Location**: `knowledge_base/chroma`
+- **Provenance Status**: `PASS`. Original URL, chunk ID, and relationships are 100% structurally identical pre and post retrieval.
+
