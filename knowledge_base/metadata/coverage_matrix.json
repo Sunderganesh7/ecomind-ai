@@ -1,0 +1,231 @@
+{
+  "soil_health": [
+    "fao_soil_biodiversity_2020",
+    "fao_vgssm_2017",
+    "research_blanco_canqui_2015"
+  ],
+  "soil_quality": [
+    "fao_vgssm_2017"
+  ],
+  "soil_ph": [
+    "fao_vgssm_2017",
+    "fao_world_soil_2015",
+    "research_blanco_canqui_2015"
+  ],
+  "organic_carbon": [
+    "fao_soil_biodiversity_2020",
+    "fao_vgssm_2017",
+    "ipbes_land_degradation_2018",
+    "research_blanco_canqui_2015",
+    "research_montagnini_2004"
+  ],
+  "soil_organic_matter": [
+    "fao_world_soil_2015",
+    "research_blanco_canqui_2015"
+  ],
+  "soil_moisture": [
+    "fao_vgssm_2017"
+  ],
+  "soil_structure": [
+    "fao_vgssm_2017",
+    "research_blanco_canqui_2015"
+  ],
+  "soil_fertility": [
+    "fao_vgssm_2017"
+  ],
+  "soil_degradation": [
+    "fao_vgssm_2017",
+    "fao_world_soil_2015",
+    "ipbes_land_degradation_2018"
+  ],
+  "soil_biodiversity": [
+    "fao_soil_biodiversity_2020"
+  ],
+  "soil_organisms": [
+    "fao_soil_biodiversity_2020"
+  ],
+  "biodiversity": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019",
+    "research_newbold_2015",
+    "research_montagnini_2004"
+  ],
+  "species_richness": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019",
+    "research_newbold_2015",
+    "research_montagnini_2004"
+  ],
+  "species_diversity": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019"
+  ],
+  "habitat_diversity": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019",
+    "research_montagnini_2004"
+  ],
+  "ecosystem_diversity": [
+    "ipbes_global_assessment_2019"
+  ],
+  "agricultural_biodiversity": [
+    "fao_biodiversity_food_2019"
+  ],
+  "biodiversity_indicators": [
+    "ipbes_global_assessment_2019"
+  ],
+  "species_survival": [
+    "ipbes_global_assessment_2019"
+  ],
+  "ecosystem_services": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019",
+    "research_foley_2005"
+  ],
+  "temperature": [
+    "ipcc_land_2019",
+    "ipcc_ar6_wg2_2022"
+  ],
+  "rainfall": [
+    "ipcc_land_2019",
+    "ipcc_ar6_wg2_2022"
+  ],
+  "precipitation": [
+    "ipcc_ar6_wg2_2022"
+  ],
+  "drought": [
+    "ipcc_land_2019"
+  ],
+  "climate_variability": [
+    "ipcc_ar6_wg2_2022"
+  ],
+  "climate_change": [
+    "ipcc_land_2019",
+    "ipcc_ar6_wg2_2022"
+  ],
+  "water_availability": [
+    "ipcc_land_2019"
+  ],
+  "agricultural_water_stress": [
+    "ipcc_ar6_wg2_2022"
+  ],
+  "soil_moisture_response_to_climate": [
+    "ipcc_land_2019"
+  ],
+  "land_use": [
+    "ipcc_land_2019",
+    "research_foley_2005",
+    "research_newbold_2015"
+  ],
+  "land_use_change": [
+    "ipcc_land_2019"
+  ],
+  "land_cover": [
+    "research_foley_2005"
+  ],
+  "agricultural_expansion": [
+    "ipbes_land_degradation_2018",
+    "research_foley_2005"
+  ],
+  "agricultural_intensification": [
+    "fao_soil_biodiversity_2020"
+  ],
+  "monoculture": [
+    "research_foley_2005"
+  ],
+  "cropping_systems": [
+    "research_blanco_canqui_2015"
+  ],
+  "habitat_conversion": [
+    "research_newbold_2015"
+  ],
+  "habitat_fragmentation": [
+    "research_foley_2005"
+  ],
+  "landscape_connectivity": [
+    "ipbes_global_assessment_2019"
+  ],
+  "deforestation": [
+    "fao_soil_biodiversity_2020",
+    "research_foley_2005"
+  ],
+  "forest_degradation": [
+    "research_foley_2005"
+  ],
+  "pollution": [
+    "fao_soil_biodiversity_2020",
+    "fao_world_soil_2015",
+    "ipbes_global_assessment_2019"
+  ],
+  "soil_pollution": [
+    "fao_world_soil_2015"
+  ],
+  "habitat_destruction": [
+    "fao_biodiversity_food_2019",
+    "ipbes_land_degradation_2018"
+  ],
+  "land_degradation": [
+    "fao_world_soil_2015",
+    "ipbes_land_degradation_2018",
+    "ipcc_land_2019"
+  ],
+  "anthropogenic_pressure": [
+    "ipbes_global_assessment_2019",
+    "research_newbold_2015"
+  ],
+  "agroforestry": [
+    "fao_biodiversity_food_2019",
+    "ipbes_land_degradation_2018",
+    "ipcc_land_2019",
+    "research_montagnini_2004"
+  ],
+  "intercropping": [
+    "fao_biodiversity_food_2019"
+  ],
+  "cover_crops": [
+    "fao_vgssm_2017",
+    "research_blanco_canqui_2015"
+  ],
+  "crop_rotation": [
+    "fao_vgssm_2017",
+    "research_blanco_canqui_2015"
+  ],
+  "habitat_restoration": [
+    "ipcc_ar6_wg2_2022",
+    "ipbes_global_assessment_2019",
+    "research_newbold_2015"
+  ],
+  "soil_conservation": [
+    "ipbes_land_degradation_2018"
+  ],
+  "conservation_agriculture": [
+    "fao_soil_biodiversity_2020",
+    "ipcc_land_2019",
+    "research_foley_2005"
+  ],
+  "reduced_tillage": [
+    "fao_vgssm_2017"
+  ],
+  "no_tillage": [
+    "fao_vgssm_2017"
+  ],
+  "organic_amendments": [
+    "fao_soil_biodiversity_2020"
+  ],
+  "crop_diversification": [
+    "fao_biodiversity_food_2019"
+  ],
+  "habitat_connectivity": [
+    "ipcc_ar6_wg2_2022",
+    "research_montagnini_2004"
+  ],
+  "restoration_of_degraded_land": [
+    "fao_world_soil_2015",
+    "ipcc_land_2019",
+    "ipbes_land_degradation_2018"
+  ],
+  "biodiversity_friendly_agriculture": [
+    "fao_biodiversity_food_2019",
+    "ipbes_global_assessment_2019"
+  ]
+}

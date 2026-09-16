@@ -1,0 +1,92 @@
+[
+  {
+    "relationship": "Soil Health \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_soil_biodiversity_2020", "fao_biodiversity_food_2019"],
+    "notes": "Healthy soils harbor significant biodiversity; agricultural practices affecting soil health directly alter microbial and macrofaunal richness."
+  },
+  {
+    "relationship": "Soil Organic Carbon \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_soil_biodiversity_2020", "research_montagnini_2004"],
+    "notes": "Higher SOC levels often correlate with increased below-ground biodiversity and support above-ground habitat provisioning."
+  },
+  {
+    "relationship": "Soil Moisture \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_vgssm_2017", "ipcc_ar6_wg2_2022"],
+    "notes": "Moisture retention preserves habitat stability during drought stress periods, directly maintaining species richness."
+  },
+  {
+    "relationship": "Rainfall \u2194 Water Availability",
+    "supported": true,
+    "source_ids": ["ipcc_land_2019", "ipcc_ar6_wg2_2022"],
+    "notes": "Changes in precipitation patterns directly impact agricultural water stress and ecosystem freshwater provisioning."
+  },
+  {
+    "relationship": "Temperature \u2194 Water Stress",
+    "supported": true,
+    "source_ids": ["ipcc_land_2019", "ipcc_ar6_wg2_2022"],
+    "notes": "Elevated temperatures increase evapotranspiration, exacerbating water stress even with stable rainfall."
+  },
+  {
+    "relationship": "Rainfall + Temperature \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["ipcc_ar6_wg2_2022", "ipbes_global_assessment_2019"],
+    "notes": "Combined climate pressures induce habitat shifting, increased mortality, and significant drops in local species richness."
+  },
+  {
+    "relationship": "Land Use \u2194 Habitat Fragmentation",
+    "supported": true,
+    "source_ids": ["research_foley_2005", "ipbes_global_assessment_2019"],
+    "notes": "Agricultural expansion and intensive cropping systems are the primary drivers breaking continuous habitats."
+  },
+  {
+    "relationship": "Habitat Fragmentation \u2194 Species Richness",
+    "supported": true,
+    "source_ids": ["research_newbold_2015", "research_foley_2005"],
+    "notes": "Isolated habitat patches suffer localized extinctions, sharply reducing total species richness in degraded landscapes."
+  },
+  {
+    "relationship": "Deforestation \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_biodiversity_food_2019", "ipbes_global_assessment_2019"],
+    "notes": "Forest removal eliminates primary habitats, leading directly to precipitous drops in terrestrial biodiversity."
+  },
+  {
+    "relationship": "Pollution \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_soil_biodiversity_2020", "ipbes_global_assessment_2019"],
+    "notes": "Agrochemical pollution severely degrades soil biodiversity and aquatic habitats adjacent to agriculture."
+  },
+  {
+    "relationship": "Agroforestry \u2194 Soil Carbon",
+    "supported": true,
+    "source_ids": ["research_montagnini_2004", "ipcc_land_2019"],
+    "notes": "Integration of trees securely sequesters atmospheric carbon in long-term soil organic matter."
+  },
+  {
+    "relationship": "Agroforestry \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["research_montagnini_2004", "fao_biodiversity_food_2019"],
+    "notes": "Trees on agricultural land serve as refugia and corridors for diverse taxa, boosting habitat diversity."
+  },
+  {
+    "relationship": "Intercropping \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["fao_biodiversity_food_2019"],
+    "notes": "Diversified crop stands foster a greater diversity of soil and above-ground species compared to monocultures."
+  },
+  {
+    "relationship": "Cover Crops \u2194 Soil Health",
+    "supported": true,
+    "source_ids": ["research_blanco_canqui_2015", "fao_vgssm_2017"],
+    "notes": "Cover cropping builds SOM, regulates moisture, and prevents erosion, improving structural and biological health."
+  },
+  {
+    "relationship": "Habitat Restoration \u2194 Biodiversity",
+    "supported": true,
+    "source_ids": ["ipbes_land_degradation_2018", "research_newbold_2015"],
+    "notes": "Actively restoring degraded land enables colonization and population recovery of local native species."
+  }
+]

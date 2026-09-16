@@ -1,78 +1,47 @@
-# Phase 2: Task 03 - Environmental Data Model Report
+# Phase 1: Task 04 - Environmental Profile API Report
 
-The foundational Environmental Data Model for **EcoMind AI** has been successfully designed and implemented according to the Phase 2 requirements, strict anti-hallucination rules, and zero-logic constraints of the frozen `PROJECT_SCOPE.md`.
+The Environmental Profile API for **EcoMind AI** has been successfully implemented, establishing the structured-input foundation necessary for the subsequent AI layers without violating the frozen `PROJECT_SCOPE.md`.
 
 ## 1. Files Created
-- `backend/app/schemas/environmental.py`
-- `backend/app/models/environmental.py`
-- `backend/app/schemas/__init__.py`
-- `tests/unit/test_environmental_models.py`
+- `backend/app/api/v1/profiles.py` (API router defining POST, GET, PUT)
+- `backend/app/services/profile_service.py` (Business logic for database handling)
+- `backend/app/services/__init__.py`
+- `tests/unit/test_profiles_api.py` (Test suite for the API)
+- `backend/README.md` (Detailed API documentation)
 
 ## 2. Files Modified
-- `backend/app/models/__init__.py`
+- `backend/app/api/v1/router.py` (Registered the `/profiles` router)
+- `backend/app/schemas/environmental.py` (Added field aliases `ph` and `use` to match the exact JSON payload requirement, and configured `observed_at` to default safely to `datetime.utcnow()`)
+- `tests/unit/test_environmental_models.py` (Updated previous tests to accommodate new categorical strings)
 
-## 3. Environmental Models Created (SQLAlchemy)
-A core `EnvironmentalObservation` table was created to serve as the unified root for environmental records. To avoid sparse columns and maintain maximum extensibility, the observation is linked via 1:1 relationships (with cascading deletes) to category tables:
-- `LocationModel`
-- `SoilModel`
-- `ClimateModel`
-- `LandModel`
-- `BiodiversityModel`
-- `HumanImpactModel`
+## 3. Endpoints Implemented
+- `POST /api/v1/profiles`: Creates a profile.
+- `GET /api/v1/profiles/{id}`: Retrieves a profile. Returns `404 Not Found` if missing.
+- `PUT /api/v1/profiles/{id}`: Updates a profile. Returns `404 Not Found` if missing.
+*Note:* These endpoints successfully appear in the FastAPI OpenAPI specification.
 
-## 4. Pydantic Schemas Created
-Created heavily validated Pydantic models aligning exactly with the API expectations:
-- `Location`, `Soil`, `Climate`, `Land`, `Biodiversity`, `HumanImpact`
-- `EnvironmentalObservationCreate`
-- `EnvironmentalObservation`
+## 4. Architecture & Validation
+A strict separation of concerns was maintained:
+`API Router` $\to$ `Pydantic Schema Validation` $\to$ `Profile Service` $\to$ `SQLAlchemy Model` $\to$ `Database`
 
-## 5. Validation Rules Implemented
-- **Latitude / Longitude:** Restricted strictly to geographic bounds (`-90` to `90` and `-180` to `180`).
-- **Soil pH:** Restricted to valid pH scale (`0.0` to `14.0`).
-- **Species Richness & Rainfall:** Non-negative limits enforced (`ge=0`).
-- **Confidence:** Capped to a percentage scale (`0.0` to `1.0`).
-- *Note:* No arbitrary scientific thresholds (like `pH < 5 = degraded`) were hardcoded into the schema. Validation strictly isolates invalid data from environmentally "bad" data.
+Validation correctly prevents negative `organic_carbon`, `rainfall`, and `moisture`, while keeping missing values as `null` instead of converting them to zero. The API absolutely does **not** hardcode arbitrary biodiversity risk judgements, delegating that strictly to the future phases.
 
-## 6. Unit Conventions
-Units were explicitly documented in the Pydantic descriptions to prevent silent misinterpretation by the future reasoning layer:
-- `temperature`: °C
-- `rainfall`: mm
-- `soil_ph`: pH scale
-- `organic_carbon`: percentage
-- `moisture`, `pollution`, `deforestation`: Original source units preserved.
+## 5. Testing & Verification
+A complete API test suite was authored utilizing FastAPI `TestClient` alongside an in-memory SQLite database setup.
+The following scenarios were verified:
+1. **Create profile**: (Successfully matched requested structured JSON payload)
+2. **Retrieve profile**: (Successfully extracted matched data)
+3. **Update profile**: (Updated individual environmental sectors successfully)
+4. **Nonexistent profile**: (Returned `404`)
+5. **Invalid data**: (Returned `422 Validation Error` successfully when negative pH was tested)
+6. **Missing required structure**: (Returned `422 Validation Error`)
 
-## 7. Missing-Data Handling
-Null vs Zero distinction is heavily enforced via Python `Optional` types. If a value is unknown, it remains `null` (None), ensuring the reasoning engine is never fed fake observations or accidental zero values.
+All 6 new API tests, plus the 7 data-model tests, pass successfully. 
 
-## 8. Data-Source Traceability
-Each `EnvironmentalObservation` includes mandatory temporal (`observed_at`) and traceability metadata:
-- `source_name`, `source_type`, `source_reference`, `data_quality`, `confidence`.
+## 6. Git Status
+All modifications were added and committed securely.
+Commit Hash: `7539c61`
+Message: `feat(api): add environmental profile endpoints`
 
-## 9. Tests Added
-Wrote Pytest coverage addressing:
-1. Valid nested environmental observations.
-2. Invalid latitude rejections.
-3. Invalid longitude rejections.
-4. Invalid soil pH formats/ranges.
-5. Missing optional environmental variables (asserting `None`).
-6. Distinguishing `null` from `0.0`.
-7. Full model serialization logic.
-
-## 10. Test Results
-All 7 tests passed successfully (`7 passed in 0.05s`). Also cleared a Pydantic V2 class-based config deprecation warning, keeping the codebase fully clean.
-
-## 11. API Preparation
-The Pydantic schemas (especially `EnvironmentalObservationCreate` and `EnvironmentalObservation`) are completely decoupled from SQLAlchemy objects via `from_attributes=True` and are immediately ready for ingestion pipelines or CRUD endpoints.
-
-## 12. Git Status
-All modifications were successfully added and committed securely.
-Commit Hash: `462098d`
-Message: `feat(data): add environmental observation models`
-
-## 13. Design Decisions
-- **SQLAlchemy 1:1 Relationships vs Flat Table:** Elected for 1:1 foreign-key mappings linking categories back to the parent `EnvironmentalObservation`. This perfectly mimics the nested conceptual tree in the architecture prompt and prevents a single table from growing infinitely wide when more variables are added in future phases.
-
-## 14. Intentionally Deferred
-- **Reasoning & RAG:** No chatbot logic, vector embeddings, or recommendations were implemented.
-- **API Endpoints:** The HTTP endpoints to ingest these observations were intentionally avoided to adhere to the strict boundaries of Task 03.
-- **Complex GIS:** Basic Lat/Lon floats were used to establish location. PostGIS wasn't prematurely instantiated.
+## 7. Intentionally Deferred
+- LLM reasoning, conversational chat, RAG, and biodiversity/risk scoring were avoided to strictly protect the scope boundaries. The API only saves and loads factual observations.
