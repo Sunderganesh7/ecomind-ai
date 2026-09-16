@@ -58,3 +58,37 @@ An independent scientific source accuracy audit was conducted to verify the inte
 - **Scientific Validity:** The audit confirmed that the relationships (e.g., Soil Organic Carbon ↔ Biodiversity) were accurately tagged based on mechanistic and direct evidence provided in the papers, avoiding exaggerated causal claims.
 - **Verdict:** `READY FOR RAG`. The dataset is strictly factual and fully aligned with Darukaa.Earth requirements, containing no hallucinations or fabricated DOIs.
 
+# Phase 1: Task 06 - Document Ingestion Pipeline Report
+The Scientific Document Ingestion Pipeline for **EcoMind AI** has been successfully constructed, completing the vital link between raw knowledge documents and the future RAG system.
+
+## 1. Pipeline Architecture
+The pipeline (`backend/app/rag/ingestion/`) was built following strict software design principles:
+- **Loader:** Discovers `.pdf` and `.txt` documents and attaches JSON metadata.
+- **Extractor:** Implemented robust extraction (using `pypdf` for PDFs), perfectly preserving page boundaries.
+- **Cleaner:** Normalizes text safely, preserving critical scientific qualifiers (e.g., "may", "associated with") instead of losing context.
+- **Chunker:** Semantically splits paragraphs utilizing a configurable word-sliding window (~200 words, 50 word overlap) to preserve scientific meaning.
+- **Metadata Attacher:** Ensures deterministic `chunk_id`s (SHA-256) and perfectly maps `sources.json` and `relationship_matrix.json` fields straight to the chunk.
+- **Orchestrator:** Streams processed chunks out as `knowledge_chunks.jsonl` (ideal for future DB bulk inserts) and generates a detailed `manifest.json`.
+
+## 2. Final Report Metrics
+*(Verified using the dummy `fao_soil_biodiversity_2020.txt` test run)*
+1. **Source documents discovered:** 1
+2. **Successfully processed:** 1
+3. **Failed:** 0
+4. **Pages processed:** 1
+5. **Chunks generated:** 1
+6. **Sources represented:** FAO (`fao_soil_biodiversity_2020`)
+7. **Topics represented:** `soil_health`
+8. **Relationship metadata preserved:** `Soil Organic Carbon ↔ Biodiversity`, `Soil Health ↔ Biodiversity`, etc.
+9. **Provenance fields preserved:** `source_id`, `url`, `page_number`, `year`, `topic`, `variables`
+10. **Tests passed/failed:** 6 / 0 (All `pytest` unit tests passed perfectly)
+11. **Files created:** 7 pipeline Python modules, 1 manifest, 1 JSONL output, 1 Test suite.
+
+## 3. Git Status
+All modifications were added and securely committed.
+Commit Hash: `74d43e1`
+Message: `feat(knowledge): implement document ingestion pipeline`
+
+## 4. Deferred
+The vector database integration (FAISS/ChromaDB/pgvector) and embedding generation are explicitly postponed to Task 07 to protect the frozen architectural scope. The pipeline output is currently sitting fully prepared in `knowledge_base/processed/chunks/knowledge_chunks.jsonl`.
+
