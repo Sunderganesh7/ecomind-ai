@@ -45,3 +45,24 @@ Scientific findings must be represented with appropriate qualifiers. Relationshi
 
 ## 9. Consumption by Future RAG Pipeline
 In upcoming phases, this metadata registry will guide a document ingestion pipeline. The vector database will index the underlying text of these sources. The LLM reasoning agent will query the vector database, utilizing the provided source IDs to cite its recommendations and prove scientific grounding.
+
+## 10. Document Ingestion Pipeline (Phase 1, Task 06)
+The backend now features a robust ingestion pipeline (`backend/app/rag/ingestion/`) designed to cleanly extract, chunk, and index this scientific corpus while mathematically guaranteeing provenance.
+
+### Ingestion Architecture
+- **Loader:** Scans `knowledge_base/sources/` and cross-references files with `sources.json`.
+- **Extractor:** Uses `pypdf` to parse PDFs, strictly preserving page boundaries and structures. Supports TXT and PDF.
+- **Cleaner:** Normalizes whitespace and artifacts without removing critical scientific qualifiers (e.g., "may", "associated with").
+- **Chunker:** Uses semantic paragraph/word-window boundaries. Configurable chunk size (~200 words) and overlap (~50 words).
+- **Metadata:** Attaches deterministic SHA-256 chunk IDs, source mappings, environmental variables, and verified relationships.
+- **Output:** Writes to `knowledge_base/processed/chunks/knowledge_chunks.jsonl` (JSON Lines format for seamless streaming to a future Vector DB).
+
+### CLI Usage
+```bash
+$env:PYTHONPATH="backend"
+python -m backend.app.rag.ingestion.pipeline --input knowledge_base/sources --metadata knowledge_base/metadata --output knowledge_base/processed/chunks
+```
+
+### Validation
+The pipeline handles failures safely. Duplicate document ingestion is prevented natively via SHA-256 chunk deterministic hashing, ensuring idempotency.
+
