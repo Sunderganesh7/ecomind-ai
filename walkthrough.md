@@ -92,3 +92,21 @@ Message: `feat(knowledge): implement document ingestion pipeline`
 ## 4. Deferred
 The vector database integration (FAISS/ChromaDB/pgvector) and embedding generation are explicitly postponed to Task 07 to protect the frozen architectural scope. The pipeline output is currently sitting fully prepared in `knowledge_base/processed/chunks/knowledge_chunks.jsonl`.
 
+# Phase 1: Task 06 - Provenance Correction Report
+A critical provenance bug involving fake page-number generation for TXT sources was resolved, strictly aligning with the provenance requirements.
+
+## 1. Corrections Implemented
+- **`extractor.py`**: Refactored the `_extract_txt` function to explicitly assign `page_number: None` (JSON `null`) for text-based sources rather than inferring synthetic pages from paragraph breaks.
+- **`metadata.py`**: Updated the deterministic `chunk_id` generator to cleanly incorporate `null` values (producing IDs like `fao_soil_biodiversity_2020_null_c000_...`) without breaking the SHA-256 hash or inserting strings like `None`.
+- **Tests**: Adjusted `test_ingestion_pipeline.py` to enforce the new behavior where TXT inputs strictly yield `None` for the page tracking property.
+
+## 2. Testing & Re-Audit
+- All unit tests (`pytest tests/unit/`) pass successfully.
+- The pipeline was re-run to overwrite stale chunks with the accurately minted versions.
+- The Python provenance audit script (`scratch/audit_provenance.py`) was re-run. Output proved determinism remains perfectly stable.
+- The `PROVENANCE_AUDIT.md` was formally updated to reflect the new `PROVENANCE VERIFIED` status.
+
+## 3. Final Decision
+`TASK 06 READY FOR TASK 07`
+No LLM, Vector Database, Embeddings, or Recommendations were implemented. This correction solely focused on pipeline extraction accuracy.
+

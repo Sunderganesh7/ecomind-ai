@@ -22,9 +22,13 @@ def audit():
     # Run the pipeline again to a temp directory and compare
     # Actually, we can just hash the chunk text + metadata as per pipeline and see if it matches
     c = chunks[0]
-    unique_string = f"{c['document_id']}_{c['page_number']}_0_{c['text'][:50]}"
+    page_num = c.get('page_number')
+    page_str = "null" if page_num is None else str(page_num)
+    page_id_str = "null" if page_num is None else f"p{page_num:03d}"
+    
+    unique_string = f"{c['document_id']}_{page_str}_0_{c['text'][:50]}"
     expected_hash = hashlib.sha256(unique_string.encode('utf-8')).hexdigest()[:12]
-    expected_id = f"{c['document_id']}_p{c['page_number']:03d}_c000_{expected_hash}"
+    expected_id = f"{c['document_id']}_{page_id_str}_c000_{expected_hash}"
     
     print(f"\nExpected ID: {expected_id}")
     print(f"Actual ID:   {c['chunk_id']}")

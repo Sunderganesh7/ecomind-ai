@@ -40,12 +40,12 @@ class DocumentExtractor:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         
-        # Split by double newline as a pseudo-page/paragraph heuristic for txt
+        # Split by double newline as a pseudo-page/paragraph heuristic for txt, but do NOT assign fake page numbers
         chunks = content.split("\n\n")
         pages = []
-        for i, chunk in enumerate(chunks, 1):
+        for chunk in chunks:
             if chunk.strip():
-                pages.append({"page_number": i, "text": chunk.strip()})
+                pages.append({"page_number": None, "text": chunk.strip()})
         return pages
 
     def _extract_pdf(self, file_path: str) -> List[Dict[str, Any]]:

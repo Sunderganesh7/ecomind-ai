@@ -37,9 +37,9 @@ def test_extraction_and_page_provenance(tmp_path):
     
     result = extractor.extract(doc_info)
     assert len(result["pages"]) == 2
-    assert result["pages"][0]["page_number"] == 1
+    assert result["pages"][0]["page_number"] is None
     assert result["pages"][0]["text"] == "Page 1 text"
-    assert result["pages"][1]["page_number"] == 2
+    assert result["pages"][1]["page_number"] is None
     assert result["pages"][1]["text"] == "Page 2 text"
 
 def test_cleaning():

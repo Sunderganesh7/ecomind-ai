@@ -26,10 +26,14 @@ class MetadataAttacher:
                 relationships.append(rel.get("relationship"))
 
         for chunk in raw_chunks:
+            page_num = chunk.get('page_number')
+            page_str = "null" if page_num is None else str(page_num)
+            page_id_str = "null" if page_num is None else f"p{page_num:03d}"
+            
             # Deterministic ID using SHA-256
-            unique_string = f"{doc_id}_{chunk['page_number']}_{chunk['chunk_index']}_{chunk['text'][:50]}"
+            unique_string = f"{doc_id}_{page_str}_{chunk['chunk_index']}_{chunk['text'][:50]}"
             chunk_hash = hashlib.sha256(unique_string.encode('utf-8')).hexdigest()[:12]
-            chunk_id = f"{doc_id}_p{chunk['page_number']:03d}_c{chunk['chunk_index']:03d}_{chunk_hash}"
+            chunk_id = f"{doc_id}_{page_id_str}_c{chunk['chunk_index']:03d}_{chunk_hash}"
             
             processed_chunk = {
                 "chunk_id": chunk_id,
@@ -41,7 +45,7 @@ class MetadataAttacher:
                 "year": year,
                 "source_type": source_type,
                 "url": url,
-                "page_number": chunk["page_number"],
+                "page_number": page_num,
                 "section": chunk["section"],
                 "topic": topics[0] if topics else None,  # primary topic mapping
                 "topics": topics, # Keep the list for full context
