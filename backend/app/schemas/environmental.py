@@ -8,36 +8,38 @@ class Location(BaseModel):
     region: Optional[str] = Field(None, min_length=1, description="Geographic region name")
 
 class Soil(BaseModel):
-    soil_ph: Optional[float] = Field(None, ge=0.0, le=14.0, description="Soil pH scale")
+    soil_ph: Optional[float] = Field(None, alias="ph", ge=0.0, le=14.0, description="Soil pH scale")
     organic_carbon: Optional[float] = Field(None, description="Soil organic carbon (percentage)")
     moisture: Optional[float] = Field(None, description="Soil moisture (unit preserved from source)")
+    model_config = {"populate_by_name": True}
 
 class Climate(BaseModel):
     temperature: Optional[float] = Field(None, description="Temperature in °C")
     rainfall: Optional[float] = Field(None, ge=0.0, description="Rainfall in mm")
 
 class Land(BaseModel):
-    land_use: Optional[str] = Field(None, description="Descriptive land use category")
+    land_use: Optional[str] = Field(None, alias="use", description="Descriptive land use category")
     crop: Optional[str] = Field(None, description="Crop type if applicable")
     cropping_system: Optional[str] = Field(None, description="Cropping system description")
+    model_config = {"populate_by_name": True}
 
 class Biodiversity(BaseModel):
     species_richness: Optional[int] = Field(None, ge=0, description="Count of species")
-    habitat_diversity: Optional[float] = Field(None, ge=0.0, description="Habitat diversity index")
+    habitat_diversity: Optional[str] = Field(None, description="Habitat diversity index or category")
 
 class HumanImpact(BaseModel):
-    pollution: Optional[float] = Field(None, description="Pollution metric (unit preserved from source)")
-    deforestation: Optional[float] = Field(None, description="Deforestation metric (unit preserved from source)")
+    pollution: Optional[str] = Field(None, description="Pollution metric or category")
+    deforestation: Optional[str] = Field(None, description="Deforestation metric or category")
 
 class EnvironmentalObservationCreate(BaseModel):
-    location: Location
+    location: Optional[Location] = None
     soil: Optional[Soil] = None
     climate: Optional[Climate] = None
     land: Optional[Land] = None
     biodiversity: Optional[Biodiversity] = None
     human_impact: Optional[HumanImpact] = None
     
-    observed_at: datetime = Field(..., description="Date and time of the observation")
+    observed_at: Optional[datetime] = Field(default_factory=datetime.utcnow, description="Date and time of the observation")
     source_name: Optional[str] = Field(None, description="Name of the data source")
     source_type: Optional[str] = Field(None, description="Type of the data source (e.g., satellite, field survey)")
     source_reference: Optional[str] = Field(None, description="Reference link or citation")

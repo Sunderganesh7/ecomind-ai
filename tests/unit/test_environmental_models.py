@@ -15,7 +15,7 @@ def test_valid_environmental_observation():
         location=Location(latitude=45.0, longitude=-90.0, region="Test Region"),
         soil=Soil(soil_ph=6.5, organic_carbon=2.1, moisture=15.0),
         climate=Climate(temperature=22.5, rainfall=120.0),
-        biodiversity=Biodiversity(species_richness=42, habitat_diversity=0.8),
+        biodiversity=Biodiversity(species_richness=42, habitat_diversity="high"),
         observed_at=datetime(2023, 1, 1, 12, 0, 0),
         source_name="Synthetic Test Data",
         confidence=0.95
