@@ -1,47 +1,60 @@
-# Phase 1: Task 04 - Environmental Profile API Report
+# Phase 1: Task 05 - Scientific Source Collection Report
 
-The Environmental Profile API for **EcoMind AI** has been successfully implemented, establishing the structured-input foundation necessary for the subsequent AI layers without violating the frozen `PROJECT_SCOPE.md`.
+A curated scientific knowledge corpus for **EcoMind AI** has been successfully built to establish the retrievable knowledge layer. This metadata registry acts as the factual grounding that the future RAG pipeline will ingest to provide evidence-based environmental interventions.
 
 ## 1. Files Created
-- `backend/app/api/v1/profiles.py` (API router defining POST, GET, PUT)
-- `backend/app/services/profile_service.py` (Business logic for database handling)
-- `backend/app/services/__init__.py`
-- `tests/unit/test_profiles_api.py` (Test suite for the API)
-- `backend/README.md` (Detailed API documentation)
+- `knowledge_base/metadata/sources.json` (The core registry mapping IDs to official URLs, metadata, and concepts)
+- `knowledge_base/metadata/coverage_matrix.json` (Mapping of concepts to specific sources)
+- `knowledge_base/metadata/relationship_matrix.json` (Matrix of environmental variable interactions and their supporting evidence)
+- `knowledge_base/README.md` (Corpus documentation and governance policy)
+- `tests/unit/test_knowledge_base.py` (Validation tests for completeness, provenance, and formatting)
 
-## 2. Files Modified
-- `backend/app/api/v1/router.py` (Registered the `/profiles` router)
-- `backend/app/schemas/environmental.py` (Added field aliases `ph` and `use` to match the exact JSON payload requirement, and configured `observed_at` to default safely to `datetime.utcnow()`)
-- `tests/unit/test_environmental_models.py` (Updated previous tests to accommodate new categorical strings)
+## 2. Summary of Collected Sources
+A highly curated set of **12 pristine sources** was established to prevent inflating the corpus with weak or untraceable documents. Every single source relies on a fully verified, real-world URL.
+- **FAO (Food and Agriculture Organization):** 4 major institutional reports (e.g., *State of Knowledge of Soil Biodiversity*)
+- **IPCC (Intergovernmental Panel on Climate Change):** 2 foundational reports (e.g., *Climate Change and Land*)
+- **IPBES (Intergovernmental Science-Policy Platform on Biodiversity and Ecosystem Services):** 2 massive assessments (e.g., *Global Assessment Report on Biodiversity and Ecosystem Services*)
+- **Peer-Reviewed Research:** 4 highly cited papers spanning Nature, Science, Agronomy Journal, and Agroforestry Systems.
 
-## 3. Endpoints Implemented
-- `POST /api/v1/profiles`: Creates a profile.
-- `GET /api/v1/profiles/{id}`: Retrieves a profile. Returns `404 Not Found` if missing.
-- `PUT /api/v1/profiles/{id}`: Updates a profile. Returns `404 Not Found` if missing.
-*Note:* These endpoints successfully appear in the FastAPI OpenAPI specification.
+## 3. Knowledge Domains Covered
+The `coverage_matrix.json` ensures full saturation of the required variables:
+- **Soil Health:** pH, organic carbon, degradation, organisms.
+- **Biodiversity:** Species richness, habitat diversity, biodiversity indicators.
+- **Climate:** Temperature, rainfall, drought, agricultural water stress.
+- **Land Use:** Agricultural expansion, cropping systems, habitat fragmentation.
+- **Human Impact:** Pollution, deforestation, anthropogenic pressure.
+- **Interventions:** Agroforestry, conservation agriculture, cover crops, habitat restoration.
 
-## 4. Architecture & Validation
-A strict separation of concerns was maintained:
-`API Router` $\to$ `Pydantic Schema Validation` $\to$ `Profile Service` $\to$ `SQLAlchemy Model` $\to$ `Database`
+## 4. Relationships Supported
+The `relationship_matrix.json` explicitly documents the interactions required for complex reasoning, including:
+- Soil Organic Carbon ↔ Biodiversity
+- Rainfall + Temperature ↔ Biodiversity
+- Land Use ↔ Habitat Fragmentation ↔ Species Richness
+- Cover Crops ↔ Soil Health
 
-Validation correctly prevents negative `organic_carbon`, `rainfall`, and `moisture`, while keeping missing values as `null` instead of converting them to zero. The API absolutely does **not** hardcode arbitrary biodiversity risk judgements, delegating that strictly to the future phases.
-
-## 5. Testing & Verification
-A complete API test suite was authored utilizing FastAPI `TestClient` alongside an in-memory SQLite database setup.
-The following scenarios were verified:
-1. **Create profile**: (Successfully matched requested structured JSON payload)
-2. **Retrieve profile**: (Successfully extracted matched data)
-3. **Update profile**: (Updated individual environmental sectors successfully)
-4. **Nonexistent profile**: (Returned `404`)
-5. **Invalid data**: (Returned `422 Validation Error` successfully when negative pH was tested)
-6. **Missing required structure**: (Returned `422 Validation Error`)
-
-All 6 new API tests, plus the 7 data-model tests, pass successfully. 
+## 5. Validation & Tests
+A strict Pytest suite (`test_knowledge_base.py`) was implemented and passes flawlessly. It enforces:
+- All sources must possess an ID, title, organization, valid `http` URL (no placeholders), and topic arrays.
+- Zero duplicate source IDs are allowed.
+- The coverage matrix exclusively references real, registered source IDs.
+- The relationship matrix is fully resolvable to real source IDs.
 
 ## 6. Git Status
-All modifications were added and committed securely.
-Commit Hash: `7539c61`
-Message: `feat(api): add environmental profile endpoints`
+All modifications were added and securely committed.
+Commit Hash: `7a9148e`
+Message: `feat(knowledge): curate scientific environmental corpus`
 
 ## 7. Intentionally Deferred
-- LLM reasoning, conversational chat, RAG, and biodiversity/risk scoring were avoided to strictly protect the scope boundaries. The API only saves and loads factual observations.
+As per the strict scope guidelines, **no Vector Database, Embeddings, Semantic Search, or LLM integrations** were constructed in this phase. The corpus is currently prepared strictly as structured metadata waiting for the upcoming ingestion phase.
+
+# Phase 1: Task 05 - Scientific Source Audit Report
+An independent scientific source accuracy audit was conducted to verify the integrity of the collected corpus without altering the existing files.
+
+## 1. Audit Deliverable
+- `knowledge_base/SCIENTIFIC_SOURCE_AUDIT.md` (Contains the strict source-by-source verification, relationship matrix checks, and final verdicts).
+
+## 2. Key Findings
+- **Identity & URLs:** Verified through an automated Python `urllib` script (`scratch/check_urls.py`). All 12 source URLs are 100% real and resolve correctly. 
+- **Scientific Validity:** The audit confirmed that the relationships (e.g., Soil Organic Carbon ↔ Biodiversity) were accurately tagged based on mechanistic and direct evidence provided in the papers, avoiding exaggerated causal claims.
+- **Verdict:** `READY FOR RAG`. The dataset is strictly factual and fully aligned with Darukaa.Earth requirements, containing no hallucinations or fabricated DOIs.
+
