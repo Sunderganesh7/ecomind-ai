@@ -1,95 +1,156 @@
+Yes. Use this **short version** and replace your current `README.md` with it:
+
+````md
 # EcoMind AI
 
-EcoMind AI is an Environmental Intelligence System designed to combine environmental data, scientific knowledge, multi-variable reasoning, and evidence-based ecological interventions.
+## AI Environmental Scientist
 
-**This project is designed as an AI Environmental Scientist system, not a generic chatbot.**
+EcoMind AI is an environmental intelligence system that combines environmental data, scientific knowledge, multi-variable reasoning, risk analysis, and evidence-backed recommendations.
 
-## 1. Project Overview
-EcoMind AI acts as a sophisticated decision-support system to analyze environmental metrics (like rainfall, soil organic carbon, species richness), assess ecological risks, and recommend actionable interventions backed by scientific research.
+It is designed as an **AI Environmental Scientist, not a generic chatbot**.
 
-## 2. Core Objective
-Use AI to understand environmental systems and support evidence-based ecological decisions without hallucinating data, relationships, or scientific literature.
+## Features
 
-## 3. Architecture
-The system enforces a strict pipeline separation:
-`Environmental Data ↓ Data Processing ↓ Feature / Metric Generation ↓ Relationship Analysis ↓ Risk Detection ↓ Scientific Retrieval ↓ Evidence ↓ Multi-Variable Reasoning ↓ Intervention ↓ Impact Assessment`
+- Environmental data management
+- Soil, climate, biodiversity, land and human-impact analysis
+- Multi-metric environmental relationship analysis
+- Environmental risk detection
+- Scientific knowledge retrieval using RAG
+- Hugging Face embeddings + ChromaDB
+- Evidence & reasoning visualization
+- Evidence-backed recommendations
+- AI Environmental Scientist conversational interface
+- Structured and validated AI responses
+- Deterministic reasoning and fallback mechanisms
 
-## 4. Repository Structure
-- `backend/`: FastAPI Python application containing core reasoning and data processing logic.
-- `frontend/`: React/Vite web application for interacting with the system.
-- `knowledge_base/`: Repository for scientific literature, documents, and environmental data metadata.
-- `tests/`: Unit and integration testing suites.
-- `docs/`: Technical and architectural documentation.
-- `scripts/`: Data ingestion, pre-processing, and evaluation utilities.
+## Architecture
 
-## 5. Technology Stack
-- **Backend:** Python, FastAPI
-- **Frontend:** React, TypeScript, Vite
-- **Infrastructure:** Docker, Docker Compose
+```text
+Environmental Data
+        ↓
+Baseline Analysis
+        ↓
+Multi-Metric Relationships
+        ↓
+Risk Detection
+        ↓
+Scientific Retrieval
+        ↓
+Evidence
+        ↓
+Recommendation
+        ↓
+LLM Explanation
+````
 
-## 6. Local Development
-*To be populated with exact run instructions.*
+## Technology Stack
 
-## 6.1 Grounded conversational API
+* **Frontend:** React, TypeScript, Vite
+* **Backend:** Python, FastAPI, Pydantic
+* **AI:** Hugging Face Sentence Transformers, RAG
+* **Vector Store:** ChromaDB
+* **Infrastructure:** Docker, Docker Compose
+* **CI/CD:** GitHub Actions
 
-`POST /api/v1/chat/` provides the conversational explanation layer. It does not
-make environmental assessments independently. For a supplied profile it runs:
+## Project Structure
 
-`profile → baseline → relationships → risks → intervention candidates → recommendation quality guard → LLM explanation`
-
-The LLM receives a controlled, Pydantic-validated context rather than database
-objects. Its response is strictly validated against the `EnvironmentalResponse` Pydantic schema, ensuring the output structure is always:
-
-```json
-{
-  "schema_version": "1.0",
-  "response_type": "environmental_assessment",
-  "assessment": {
-    "summary": "Natural language summary of the deterministic reasoning.",
-    "status": "informational"
-  },
-  "drivers": [],
-  "recommendations": [],
-  "metrics": [],
-  "time_horizon": {},
-  "confidence": {},
-  "evidence": [],
-  "variables_used": [],
-  "reasoning_trace": []
-}
+```text
+backend/          FastAPI backend
+frontend/         React frontend
+knowledge_base/   Scientific knowledge
+tests/            Tests
+docs/             Documentation
+scripts/          Supporting utilities
+.github/          GitHub Actions
 ```
 
-**Grounding Validation**: The API guarantees that unrecognised metrics, fabricated evidence, or invented interventions are strictly rejected. If the configured LLM provider is unavailable, or if the LLM output violates the strict schema or consistency rules, the API returns a deterministic recommendation fallback that maintains the same exact schema. Conversation memory is bounded to recent messages and retains its active profile ID.
+## Local Setup
 
-Example request:
+### Backend
 
-```json
-{
-  "conversation_id": "farm-1",
-  "profile_id": "1",
-  "message": "Why are you recommending intercropping?"
-}
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-## 7. Environment Variables
-See `.env.example` for the required configuration structure.
+### Frontend
 
-## 8. Testing
-Test suites are located in the `tests/` directory.
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## 9. Git Workflow
-Follow standard pull request models. Keep commits atomic and descriptive.
+Frontend: `http://localhost:5173`
 
-## 10. Development Roadmap
-Refer to Phase documents. Currently in Phase 1: Engineering Foundation.
+Backend: `http://127.0.0.1:8000`
 
-## 11. Recommendation Architecture
-EcoMind AI employs a deterministic, evidence-backed environmental recommendation pipeline to eliminate LLM hallucinations:
-1. **Profile Generation**: Ingestion of raw environmental variables.
-2. **Baseline Analysis**: Scientific thresholding of metrics.
-3. **Relationships**: Evaluation of multi-metric ecosystem relationships.
-4. **Risk Patterns**: Generation of formal composite pressures.
-5. **Intervention Graph**: Deterministic condition-matching to generate candidate solutions.
-6. **Recommendation Engine**: Synthesis of explicit mechanisms, metric impacts, constraints, and ChromaDB-verified scientific provenance. 
+API Docs: `http://127.0.0.1:8000/docs`
 
-*(The LLM is strictly reserved for the final natural-language explanation of this deterministic payload).*
+## Environmental Reasoning
+
+EcoMind AI analyzes multiple variables together, for example:
+
+```text
+Organic Carbon + Moisture → Habitat Quality
+Rainfall + Temperature → Species Pressure
+Land Use + Cropping System → Species Richness Pressure
+Deforestation + Habitat Diversity → Biodiversity Pressure
+```
+
+## Recommendation Pipeline
+
+```text
+Profile
+ ↓
+Baseline
+ ↓
+Relationships
+ ↓
+Risks
+ ↓
+Interventions
+ ↓
+Scientific Evidence
+ ↓
+Validated Recommendation
+```
+
+The LLM is used for controlled natural-language explanation of the validated environmental reasoning rather than acting as the sole source of environmental knowledge.
+
+## Scientific Grounding
+
+Scientific documents are processed, chunked, embedded and stored for semantic retrieval. Retrieved evidence is connected to environmental reasoning and recommendations to improve traceability.
+
+## Current Status
+
+Implemented:
+
+* Environmental intelligence dashboard
+* Soil, climate, biodiversity, land and human-impact modules
+* Risk Profile
+* AI Scientist
+* Evidence & Reasoning
+* RAG knowledge retrieval
+* Multi-metric reasoning
+* Recommendation pipeline
+* Structured API responses
+* Testing and GitHub Actions foundation
+
+Further improvements:
+
+* Enhanced clarification workflow
+* Expanded multi-turn memory
+* Broader scientific corpus
+* Evidence-supported quantitative impact estimates
+* Production deployment
+
+## Repository
+
+[https://github.com/Sunderganesh7/ecomind-ai](https://github.com/Sunderganesh7/ecomind-ai)
+
+## License
+
+Developed for the Darukaa.Earth AI Biodiversity Intelligence Challenge.
+
