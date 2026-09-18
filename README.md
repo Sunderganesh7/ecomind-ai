@@ -1,6 +1,4 @@
-Yes. Use this **short version** and replace your current `README.md` with it:
 
-````md
 # EcoMind AI
 
 ## AI Environmental Scientist
