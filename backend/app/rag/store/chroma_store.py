@@ -6,8 +6,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from app.core.config import BACKEND_DIR
+
 class ChromaKnowledgeStore:
-    def __init__(self, persist_directory: str = "knowledge_base/chroma", collection_name: str = "ecomind_scientific_knowledge"):
+    def __init__(self, persist_directory: str = None, collection_name: str = "ecomind_scientific_knowledge"):
+        if persist_directory is None:
+            persist_directory = str(BACKEND_DIR.parent / "knowledge_base" / "chroma")
         self.persist_directory = persist_directory
         self.collection_name = collection_name
         

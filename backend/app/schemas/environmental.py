@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import datetime
 
@@ -12,6 +12,13 @@ class Soil(BaseModel):
     organic_carbon: Optional[float] = Field(None, description="Soil organic carbon (percentage)")
     moisture: Optional[float] = Field(None, description="Soil moisture (unit preserved from source)")
     model_config = {"populate_by_name": True}
+
+    @field_validator("moisture")
+    @classmethod
+    def validate_moisture(cls, v: Optional[float]) -> Optional[float]:
+        if v is not None and (v < 0.0 or v > 100.0):
+            return None
+        return v
 
 class Climate(BaseModel):
     temperature: Optional[float] = Field(None, description="Temperature in °C")

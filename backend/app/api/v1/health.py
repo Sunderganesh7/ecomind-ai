@@ -9,7 +9,7 @@ class HealthResponse(BaseModel):
     service: str
     version: str
 
-@router.get("/health", response_model=HealthResponse, summary="Health Check Endpoint")
+@router.get("", response_model=HealthResponse, summary="Health Check Endpoint")
 def health_check():
     return HealthResponse(
         status="healthy",

@@ -154,3 +154,112 @@ The **ChromaDB Knowledge Store** and semantic search API have been successfully 
 - **Persistence Location**: `knowledge_base/chroma`
 - **Provenance Status**: `PASS`. Original URL, chunk ID, and relationships are 100% structurally identical pre and post retrieval.
 
+
+# Phase 3: Task 09 - Environmental Baseline Analyzer Report
+
+The Environmental Baseline Analyzer for EcoMind AI has been successfully constructed. This layer evaluates environmental observations against scientifically grounded reference thresholds without relying on arbitrary or hallucinated configurations.
+
+## 1. Implementation Details
+- **Reference Configuration**: Established strict references in knowledge_base/references/environmental_references.json (e.g., FAO soil pH ranges, IPBES land use risks) to dictate expected conditions.
+- **Reference Service**: Authored  ackend/app/reasoning/baseline/reference_service.py to securely parse reference metadata.
+- **Metric Classifier**: Implemented a deterministic engine in classifiers.py that processes:
+  - Range references (e.g., < min = low, > max = high)
+  - Categorical references (e.g., monoculture = simplified)
+  - Context-dependent metrics (e.g., ainfall without context)
+  - Missing data handled explicitly (status = unknown).
+- **Baseline Analyzer Engine**: Created nalyzer.py which dynamically iterates through ORM-based EnvironmentalObservation payloads and applies reference-based classification logic accurately.
+- **API Integration**: Mounted the POST /api/v1/profiles/{id}/baseline endpoint inside profiles.py to seamlessly generate baseline profiles.
+
+## 2. Validation & Testing
+- A suite of 10 automated unit tests (	est_baseline_analyzer.py) proved 100% successful.
+- Tests validated boundaries, None value handling, categorical evaluation, and integration with the backend SQLite DB routing.
+- The 	est_api_endpoint ensures a 200 HTTP response wrapping the multi-variable evaluations dynamically formatted as JSON schemas.
+
+## 3. Metrics
+- **Evaluated Variables Supported**: organic_carbon, soil_ph, ainfall, 	emperature, cropping_system, land_use, species_richness, habitat_diversity, pollution, deforestation, moisture
+- **Generated Signals**: Clean baseline classifications, yielding states like low, 
+ormal, degraded, simplified, context_dependent, or unknown.
+
+## 4. Readiness
+The system deterministically computes a baseline profile for multi-metric scenarios, preserving strict scientific boundaries and explicit missing-value handling.
+READY FOR TASK 10.
+
+# Phase 3: Task 10 - Multi-Metric Relationship Engine Report
+The Multi-Metric Relationship Engine successfully links isolated baseline signals dynamically and structurally.
+- **Relationships Implemented**: `soil_water`, `climate_water`, `land_habitat`, `deforestation_habitat`, `soil_vegetation`.
+- **Reasoning Process**: Maps primary prerequisites → generates intermediate state variables (e.g., `water_constraint`, `habitat_quality`) → pulls scientific evidence directly from ChromaDB via `KnowledgeSearchService`.
+- **Tests**: 63 tests successfully verified multi-variable determinism.
+
+# Phase 3: Task 11 - Environmental Risk Engine Report
+The Environmental Risk Engine evaluates baseline inputs and relationships to identify formal composite risk patterns.
+- **Risk Patterns Implemented**: `composite_biodiversity_pressure`, `water_vegetation_stress`, `habitat_simplification_pressure`, `deforestation_habitat_loss`, `soil_vegetation_pressure`.
+- **Primary vs Secondary**: Formally distinguishes between observed primary drivers and inferred secondary consequences.
+- **Tests**: 12 tests successfully verified composite detection and missing context handling without hallucinated variables.
+
+# Phase 4: Task 12 - Intervention Knowledge Graph / Matrix Report
+The Intervention Knowledge Graph acts as the final deterministic recommendation candidate generator.
+- **Interventions Registered**: 3 (`legume_intercropping`, `cover_crops`, `agroforestry`).
+- **Condition Mappings**: 10 explicit target conditions.
+- **Mechanisms**: 5 explicit mechanisms defining exactly how an intervention works.
+- **Metric Relationships**: 6 explicit paths mapping mechanisms to targeted metrics.
+- **Evidence Strategy**: Searches and strictly embeds valid scientific provenance from the `KnowledgeSearchService`.
+- **Constraints & Trade-offs**: Represented fully (e.g. `water_availability`, water competition tradeoffs).
+- **Tests**: 10 tests successfully pass verifying multi-condition matching, constraints, and determinism.
+- **Limitations**: The corpus of interventions is currently limited to the 3 explicit test configurations; additional interventions require expanding the `interventions.json` registry.
+
+# ECO MIND AI - Walkthrough
+
+## Phase 3: AI Scientist LLM Usage Optimization & Response Rendering Fixes
+- **Goal:** Minimize LLM calls to prevent quota exhaustion, fix the "No Chunks Found" retrieval bug for scientific evidence, correctly map "Drivers" string parsing, and distinguish Current Variables from Expected Metric Impacts.
+- **Changes made:**
+  - `backend/app/llm/orchestrator.py`: Stripped out the 2nd-pass retry loop entirely. If the LLM throws a schema/validation error, the system now instantly uses `_fallback_response` (a valid deterministic payload) rather than wasting a second API call. Normal requests now take exactly 1 LLM call (or 0 if fallback is triggered immediately).
+  - `backend/app/rag/store/chroma_store.py`: Fixed a relative path bug where the `persist_directory` incorrectly pointed to `backend/knowledge_base/chroma` (which was empty) instead of the project root's `knowledge_base/chroma`. The system now correctly hits the populated DB. For interventions like `legume_intercropping` where no matching scientific chunks exist, it correctly preserves the "INSUFFICIENT SCIENTIFIC EVIDENCE" state without fabricating data.
+  - `backend/app/reasoning/risk/evaluator.py`: Fixed Pydantic `extra="ignore"` dropping fields on `Driver` creation. Mapped `d_state.name` explicitly to the `variable` field so that driver/consequence states are preserved for the frontend instead of defaulting to `"unspecified"`, which caused them to render as concatenated string blobs in the UI.
+  - `frontend/src/components/AnalysisWorkspace.tsx`: Decoupled `response.metrics` from Expected Impacts. Retitled the top panel to "Current Environmental Measurements". Created a dedicated "Expected Intervention Impacts" section that loops over `response.recommendations` and extracts the explicitly supported `impacted_metrics` without projecting fake values (using string mappings like `soil organic carbon — potential improvement`).
+- **Validation:**
+  - Ran backend `pytest` and frontend `vitest`/`build` to confirm component safety.
+  - No HTTP 500s are thrown during fallback LLM failure simulations. UI cleanly displays fallback deterministic analysis.
+
+## Phase 2: Land Intelligence Logic Fix (Surgical Fix)
+- **Goal:** Stop "agriculture" and "crop rotation" from automatically being classified as DEGRADED or generating biodiversity pressure when no underlying metrics indicate degradation.
+- **Changes made:**
+  - `knowledge_base/references/environmental_references.json`: Updated `land_use = agriculture` to have `status: context_dependent` and `risk: undetermined`. This allows the baseline analyzer to report it as "Observed / Context-dependent" rather than automatically flagging it as "degraded" and asserting "potential_habitat_pressure".
+  - `backend/app/reasoning/risk/evaluator.py`: Modified the risk evaluation engine to only activate a risk pattern if there is at least one primary/supporting driver or secondary consequence that exhibits a constrained state (e.g., `low`, `high`, `degraded`, `simplified`, `elevated`, or not `none_identified`). Now, the mere existence of a relationship (like "land use + cropping system -> species richness pressure") will not blindly spawn a risk unless the observed conditions actually support it.
+- **Validation:**
+  - Ran backend `pytest` and frontend `npm run build` to verify no regressions were introduced. Build succeeded.
+  - As requested, healthy agricultural profiles will now correctly indicate "Observed / Context-dependent" for Land Use instead of displaying a false "DEGRADED" tag, and they won't automatically trigger "Habitat Simplification Pressure" simply due to the presence of agriculture and crop rotation.
+
+# ECO MIND AI — Integration & Data Consistency Walkthrough (Tasks 1–23)
+
+## Overview of Fixes Implemented
+
+Browser testing identified runtime and data-consistency issues in Tasks 1–23. These were addressed through minimal, surgical changes across backend validation/reference lookups and frontend state/presentation mapping:
+
+1. **Invalid Soil Moisture Handling (Issue 1):**
+   - Implemented validation in `backend/app/schemas/environmental.py` and `classifiers.py` converting out-of-range percentage values (`moisture < 0.0` or `> 100.0`) to `None` / `unknown` rather than fabricating or silently clamping.
+   - Form validation in `frontend/src/pages/EnvironmentalData.tsx` enforces `0.0 <= moisture <= 100.0` and adds `max="100"` HTML attribute.
+   - Display guards in `MetricCard.tsx`, `EvidenceAndReasoning.tsx`, and `AnalysisWorkspace.tsx` safely display `Unknown` for impossible values.
+2. **Consistent Land Use Propagation (Issue 2 & 6):**
+   - Root cause identified: `"agriculture"` was missing from `knowledge_base/references/environmental_references.json` and categorical fallback was defaulting to `unknown`, causing `land_use` to be omitted from `RiskEvaluator` and `ContextBuilder`.
+   - Added `"agriculture"` to reference values and robust categorical matching in `classifiers.py`.
+   - Result: `land_use` is now recognized, evaluated, and active in `Habitat Simplification Pressure`, and appears under `Variables Analyzed` in AI Scientist.
+3. **Clear Distinction of Fallbacks & Validation Failures (Issue 3):**
+   - `AnalysisWorkspace.tsx` introduces prominent status banners distinguishing `DETERMINISTIC FALLBACK — ACTION FLAGGED BY QUALITY GUARD (VALIDATION FAILURE)`, `DETERMINISTIC FALLBACK (RULE-BASED SYNTHESIS)`, and `SUCCESSFUL EVIDENCE-BACKED RESPONSE`.
+   - Assessment and Recommendation sections explicitly badge deterministic outputs without disguising them as successful conversational AI.
+4. **Separation of Scientific Evidence from Deterministic Analysis (Issue 4 & 8):**
+   - In `AnalysisWorkspace.tsx`, claims are partitioned into two separate sections:
+     - `Scientific Evidence Retrieved from Knowledge Base`: peer-reviewed literature chunks with honest `INSUFFICIENT SCIENTIFIC EVIDENCE` handling.
+     - `Environmental / Deterministic Analysis`: causal multi-metric ecological rule engine derivations.
+   - `EvidenceCard.tsx` styles deterministic claims with `DETERMINISTIC ANALYSIS` and scientific claims with `SUPPORTED BY SCIENTIFIC LITERATURE` or `INSUFFICIENT SCIENTIFIC EVIDENCE`.
+5. **Evidence & Reasoning Data Synchronization (Issue 5):**
+   - Added `Land Use` and `Soil pH` to the Environmental Variables grid.
+   - Verified immediate synchronization with `profile` updates via `EnvironmentalContext.refresh()`.
+
+# Phase 5: Task 13 - Evidence-Backed Recommendation Engine Report
+The Evidence-Backed Recommendation Engine synthesizes the output of the full pipeline (Baseline → Relationships → Risks → Interventions) into a strictly formatted, explainable recommendation without relying on LLM hallucination.
+- **Architectural Flow**: Deterministic reasoning occurs first, constructing the complete `StructuredRecommendation` object containing mechanisms, metric impacts, and evidence before any LLM formatting.
+- **Mandatory Output Fields**: Every recommendation generates `what_to_do`, `why_it_works`, `environmental_mechanism`, `impacted_metrics`, `time_horizon`, `confidence`, and `evidence`.
+- **Reasoning Trace**: A full internal trace (from observation to final condition match) is exposed per recommendation, making every output fully auditable.
+- **Constraints & Applicability**: Actively evaluates context completeness. If `< 3` variables are provided, the engine degrades confidence and flags `applicability="context_dependent"`.
+- **Tests**: 7 unit tests cover missing data, multi-metric reasoning, deterministic behavior, hallucination prevention (strict confidence vocabulary), and evidence verification.
+- **API Endpoint**: `POST /api/v1/profiles/{id}/recommendations` integrates the entire multi-stage evaluation pipeline.
