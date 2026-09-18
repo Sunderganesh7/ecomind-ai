@@ -1,0 +1,84 @@
+[
+  {
+    "relationship_id": "soil_water",
+    "name": "Soil condition and water influence on vegetation",
+    "required_inputs": [
+      "organic_carbon",
+      "moisture"
+    ],
+    "intermediate_states": [
+      "vegetation_condition"
+    ],
+    "downstream_states": [
+      "habitat_quality",
+      "biodiversity_pressure"
+    ],
+    "evidence_topics": [
+      "soil_health",
+      "soil_biodiversity",
+      "soil_organic_carbon",
+      "soil_moisture"
+    ]
+  },
+  {
+    "relationship_id": "climate_water",
+    "name": "Climate influence on water availability and vegetation stress",
+    "required_inputs": [
+      "rainfall",
+      "temperature"
+    ],
+    "intermediate_states": [
+      "water_availability",
+      "vegetation_stress"
+    ],
+    "downstream_states": [
+      "species_pressure"
+    ],
+    "evidence_topics": [
+      "climate_change",
+      "water_stress",
+      "temperature",
+      "drought"
+    ]
+  },
+  {
+    "relationship_id": "land_habitat",
+    "name": "Land use influence on habitat complexity and species richness",
+    "required_inputs": [
+      "land_use",
+      "cropping_system"
+    ],
+    "intermediate_states": [
+      "habitat_simplification",
+      "habitat_fragmentation"
+    ],
+    "downstream_states": [
+      "species_richness_pressure"
+    ],
+    "evidence_topics": [
+      "land_use",
+      "agricultural_expansion",
+      "habitat_destruction",
+      "habitat_fragmentation"
+    ]
+  },
+  {
+    "relationship_id": "deforestation_habitat",
+    "name": "Deforestation and habitat diversity influence on biodiversity pressure",
+    "required_inputs": [
+      "deforestation",
+      "habitat_diversity"
+    ],
+    "intermediate_states": [
+      "habitat_loss"
+    ],
+    "downstream_states": [
+      "biodiversity_pressure"
+    ],
+    "evidence_topics": [
+      "deforestation",
+      "habitat_change",
+      "habitat_conversion"
+    ]
+  }
+]

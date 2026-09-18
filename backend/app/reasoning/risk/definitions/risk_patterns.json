@@ -1,0 +1,74 @@
+[
+  {
+    "risk_pattern_id": "composite_biodiversity_pressure",
+    "name": "Composite Biodiversity Pressure",
+    "required_signals": [
+      "organic_carbon",
+      "moisture",
+      "cropping_system"
+    ],
+    "supporting_signals": [
+      "species_richness"
+    ],
+    "relationships": [
+      "soil_water",
+      "land_habitat"
+    ],
+    "outcome": "potential_biodiversity_pressure"
+  },
+  {
+    "risk_pattern_id": "water_vegetation_stress",
+    "name": "Water and Vegetation Stress",
+    "required_signals": [
+      "rainfall",
+      "temperature",
+      "moisture"
+    ],
+    "supporting_signals": [],
+    "relationships": [
+      "climate_water",
+      "soil_water"
+    ],
+    "outcome": "potential_vegetation_stress"
+  },
+  {
+    "risk_pattern_id": "habitat_simplification_pressure",
+    "name": "Habitat Simplification Pressure",
+    "required_signals": [
+      "land_use",
+      "cropping_system",
+      "habitat_diversity"
+    ],
+    "supporting_signals": [],
+    "relationships": [
+      "land_habitat"
+    ],
+    "outcome": "potential_habitat_simplification"
+  },
+  {
+    "risk_pattern_id": "deforestation_habitat_loss",
+    "name": "Deforestation and Habitat Loss Pressure",
+    "required_signals": [
+      "deforestation",
+      "habitat_diversity"
+    ],
+    "supporting_signals": [],
+    "relationships": [
+      "deforestation_habitat"
+    ],
+    "outcome": "potential_habitat_loss"
+  },
+  {
+    "risk_pattern_id": "soil_vegetation_pressure",
+    "name": "Soil and Vegetation Pressure",
+    "required_signals": [
+      "organic_carbon",
+      "moisture"
+    ],
+    "supporting_signals": [],
+    "relationships": [
+      "soil_water"
+    ],
+    "outcome": "potential_habitat_quality_pressure"
+  }
+]

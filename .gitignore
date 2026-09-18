@@ -59,7 +59,7 @@ db.sqlite3
 *.model
 data/
 datasets/
-models/
+/models/
 
 # Coverage
 .coverage

@@ -1,0 +1,95 @@
+[
+  {
+    "intervention_id": "legume_intercropping",
+    "name": "Legume Intercropping",
+    "target_conditions": [
+      "low_organic_carbon",
+      "water_constraint",
+      "habitat_simplification",
+      "composite_biodiversity_pressure"
+    ],
+    "mechanisms": [
+      {
+        "mechanism_id": "increased_soil_cover",
+        "description": "Greater vegetative cover can influence soil surface conditions and moisture retention.",
+        "evidence_required": true,
+        "affected_metrics": [
+          {"metric": "moisture", "effect": "potential_improvement", "pathway": "reduced_evaporation"}
+        ]
+      },
+      {
+        "mechanism_id": "nutrient_cycling",
+        "description": "Legumes fix atmospheric nitrogen, altering soil nutrient profiles.",
+        "evidence_required": true,
+        "affected_metrics": [
+          {"metric": "organic_carbon", "effect": "potential_improvement", "pathway": "increased_plant_residue"}
+        ]
+      },
+      {
+        "mechanism_id": "crop_diversification",
+        "description": "Diversifying crop species can break pest cycles and increase habitat heterogeneity.",
+        "evidence_required": true,
+        "affected_metrics": [
+          {"metric": "habitat_diversity", "effect": "potential_improvement", "pathway": "structural_complexity"}
+        ]
+      }
+    ],
+    "evidence_requirements": ["soil_health", "intercropping", "biodiversity"],
+    "constraints": ["water_availability", "seed_availability", "farmer_management_requirements"],
+    "tradeoffs": [
+      {
+        "description": "Potential competition for water between main crop and intercrop in dry years.",
+        "metrics": ["moisture"],
+        "context": "Water-limited environments"
+      }
+    ],
+    "time_horizon": "medium_term"
+  },
+  {
+    "intervention_id": "cover_crops",
+    "name": "Cover Crops",
+    "target_conditions": [
+      "low_organic_carbon",
+      "water_vegetation_stress",
+      "soil_vegetation_pressure"
+    ],
+    "mechanisms": [
+      {
+        "mechanism_id": "soil_cover",
+        "description": "Maintains continuous soil cover, reducing erosion and evaporation.",
+        "evidence_required": true,
+        "affected_metrics": [
+          {"metric": "organic_carbon", "effect": "potential_improvement", "pathway": "biomass_addition"},
+          {"metric": "moisture", "effect": "potential_stabilization", "pathway": "reduced_surface_evaporation"}
+        ]
+      }
+    ],
+    "evidence_requirements": ["soil_health", "erosion_control"],
+    "constraints": ["water_availability_for_establishment", "economic_constraints"],
+    "tradeoffs": [],
+    "time_horizon": "short_term"
+  },
+  {
+    "intervention_id": "agroforestry",
+    "name": "Agroforestry",
+    "target_conditions": [
+      "habitat_simplification_pressure",
+      "deforestation_habitat_loss",
+      "low_organic_carbon"
+    ],
+    "mechanisms": [
+      {
+        "mechanism_id": "habitat_heterogeneity",
+        "description": "Integrates trees into agricultural landscapes, increasing structural complexity.",
+        "evidence_required": true,
+        "affected_metrics": [
+          {"metric": "habitat_diversity", "effect": "potential_improvement", "pathway": "canopy_layer_addition"}
+        ]
+      }
+    ],
+    "evidence_requirements": ["agroforestry", "biodiversity"],
+    "constraints": ["land_tenure", "long_term_investment"],
+    "tradeoffs": [],
+    "time_horizon": "long_term"
+  }
+]
